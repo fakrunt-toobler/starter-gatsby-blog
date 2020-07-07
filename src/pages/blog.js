@@ -2,7 +2,7 @@ import React from 'react'
 import { graphql } from 'gatsby'
 import get from 'lodash/get'
 import { Helmet } from 'react-helmet'
-import styles from './blog.module.css'
+import Banner from '../components/blog-banner'
 import Layout from '../components/layout'
 import ArticlePreview from '../components/article-preview'
 
@@ -10,12 +10,13 @@ class BlogIndex extends React.Component {
   render() {
     const siteTitle = get(this, 'props.data.site.siteMetadata.title')
     const posts = get(this, 'props.data.allContentfulBlogPost.edges')
+    const [blog] = get(this, 'props.data.allContentfulPerson.edges')
 
     return (
       <Layout location={this.props.location}>
         <div style={{ background: '#fff' }}>
           <Helmet title={siteTitle} />
-          <div className={styles.hero}>Blog</div>
+          <Banner data={blog.node} />
           <div className="wrapper">
             <h2 className="section-headline">Recent articles</h2>
             <ul className="article-list">
@@ -53,6 +54,25 @@ export const pageQuery = graphql`
           description {
             childMarkdownRemark {
               html
+            }
+          }
+        }
+      }
+    }
+    allContentfulPerson(
+      filter: { contentful_id: { eq: "50siFgWUuw9JeyaJjXG2oS" } }
+    ) {
+      edges {
+        node {
+          name
+          heroImage: image {
+            fluid(
+              maxWidth: 1180
+              maxHeight: 480
+              resizingBehavior: PAD
+              background: "rgb:000000"
+            ) {
+              ...GatsbyContentfulFluid_tracedSVG
             }
           }
         }
